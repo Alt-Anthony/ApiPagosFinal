@@ -16,6 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from rest_framework import routers
+from api_pagos.views import PaymentExpiredView, PaymentView 
+from api_servicios.views import ServiceRest
+from api_usuarios.views import UserCreateView, UserListView
+
+
+router = routers.DefaultRouter()
+router.register(r'service', ServiceRest, 'Service')
+router.register(r'payment', PaymentView, 'Payment')
+router.register(r'payment-expired', PaymentExpiredView, 'Payment-expired')
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('users', UserListView.as_view(), name='user-list'),
+    path('user/create/', UserCreateView.as_view() ,name='user-create' ),
 ]
+
+urlpatterns += router.urls

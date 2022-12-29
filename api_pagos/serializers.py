@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Payment, Payments_expired
 
-class PaymentSerializer(serializers.Serializer):
+class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
@@ -12,7 +12,7 @@ class PaymentSerializer(serializers.Serializer):
             raise serializers.ValidationError('El monto no puede ser negativo')
         return data
     
-class PaymentExpiredSerializer(serializers.Serializer):
+class PaymentExpiredSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payments_expired
         fields = '__all__'
