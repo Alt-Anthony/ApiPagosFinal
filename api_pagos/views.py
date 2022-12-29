@@ -5,11 +5,16 @@ from .serializers import PaymentSerializer, PaymentExpiredSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .pagination import Pagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny,IsAdminUser,IsAuthenticated
 
 class PaymentView(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     pagination_class = Pagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['payment_date', "expiration_date"]
+    throttle_scope = 'payment'
     
     def create(self, request):
         serializer = PaymentSerializer(data=request.data)
@@ -50,3 +55,11 @@ class PaymentView(viewsets.ModelViewSet):
 class PaymentExpiredView(viewsets.ModelViewSet):
     queryset = Payments_expired.objects.all()
     serializer_class = PaymentExpiredSerializer
+    throttle_scope = 'all'
+    
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAdminUser()]
+        elif self.request.method == "POST":
+            return [AllowAny()]
+        return [IsAdminUser()]
